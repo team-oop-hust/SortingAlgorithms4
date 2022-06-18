@@ -38,7 +38,7 @@ public class RadixSort extends BaseSort{
 	public RadixSort(JPanel container) {
 		super(container);
 		initStackPos();
-		this.InitRandomArray(15);
+		this.InitRandomArray(15, 1000);
 		initArrayPos();
 	}
 	
@@ -178,7 +178,6 @@ public class RadixSort extends BaseSort{
 				{
 					tmp = tmp.substring(tmp.length() - row);
 				}
-				System.out.println(row + " " + tmp2 + " " + hl + " " + tmp);
 			}
 			
 			e.setLabelText("<html>" + tmp2 + "<font color='red'>" + hl + "</font>" + tmp + "</html>");

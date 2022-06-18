@@ -5,10 +5,10 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.util.Random;
 import javax.swing.JPanel;
-
+import window.CompleteSortWindow;
 
 public class BaseSort {
-//dksjgksdfhksjda
+
 	protected Element[] elements;
 	protected JPanel container;
 	protected boolean isIncrease;
@@ -34,7 +34,7 @@ public class BaseSort {
 		currentSort = this;
 	}
 	
-	public void InitRandomArray(int size)
+	public void InitRandomArray(int size, int maxValue)
 	{
 		Dimension d = this.container.getSize();
 		Point pos = new Point((d.width - distance * (size - 1) - labelSize) / 2, 100);
@@ -42,7 +42,7 @@ public class BaseSort {
 		Random random = new Random();
 		for(int i = 0 ; i < elements.length; i++)
 		{
-			elements[i] = new Element(random.nextInt(1000));
+			elements[i] = new Element(random.nextInt(maxValue));
 			elements[i].setPosition(new Point(pos.x, pos.y));
 			container.add(elements[i].getLabel());
 			pos.x += distance;
@@ -114,7 +114,7 @@ public class BaseSort {
 				{
 					index++;
 				}
-				e.setPosition(MoveTowards(e.getPosition(), waypoints[index], 10));
+				e.setPosition(MoveTowards(e.getPosition(), waypoints[index], speed));
 				Thread.sleep(delayFrame);
 			}
 		}
@@ -156,5 +156,11 @@ public class BaseSort {
 			res[i] = elements[i].getValue();
 		}
 		return res;
+	}
+	
+	public void ShowCompleteSortDialog()
+	{
+		CompleteSortWindow window = new CompleteSortWindow();
+		window.setVisible(true);
 	}
 }
