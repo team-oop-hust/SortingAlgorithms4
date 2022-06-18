@@ -12,7 +12,7 @@ public class BaseSort {
 	protected Element[] elements;
 	protected JPanel container;
 	protected boolean isIncrease;
-	protected boolean isSorting;
+	protected boolean isSorting;//kiemtra
 	final int speed = 10;
 	final int distance = 80;
 	final int labelSize = 50;
