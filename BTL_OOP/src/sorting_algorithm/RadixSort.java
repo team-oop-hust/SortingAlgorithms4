@@ -44,7 +44,13 @@ public class RadixSort extends BaseSort{
 	
 	public void Sort()
 	{
-		
+		int m = getMax(elements);
+	    for (int exp = 1; m / exp > 0; exp *= 10)
+	    {
+	    	Highlight((int)Math.log10(exp));
+	    	countSort(exp);
+	    }
+	    ResetValue();
 	}
 	
 	public void Swap(Element e1, Element e2)
@@ -99,20 +105,7 @@ public class RadixSort extends BaseSort{
 	    }
 	}
 	  
-	public void radixsort()
-	{
-	    int m = getMax(elements);
-	    for (int exp = 1; m / exp > 0; exp *= 10)
-	    {
-	    	Highlight((int)Math.log10(exp));
-	    	countSort(exp);
-	    }
-	    for(Element e : elements)
-	    {
-	    	System.out.print(e.getValue() + " ");
-	    }
-	}
-	
+
 	void MoveToStack(Element e, int indexStack)
 	{
 		Coloring(e, Color.green);

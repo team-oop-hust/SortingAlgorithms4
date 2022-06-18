@@ -91,7 +91,7 @@ public class MainWindow extends JFrame{
         	{
         		try
         		{
-        			rs.radixsort();
+        			rs.Sort();
         		}
         		catch(Exception e){
         		}
