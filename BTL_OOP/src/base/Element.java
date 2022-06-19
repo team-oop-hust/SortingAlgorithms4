@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 public class Element {
-	
+	//sadhgfksdàghlkád
 	Color color;
 	int value;
 	Point position;
