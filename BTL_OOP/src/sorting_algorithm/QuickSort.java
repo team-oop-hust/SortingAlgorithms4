@@ -66,11 +66,11 @@ public class QuickSort extends BaseSort{
 	public void Swap(int p)
 	{
 		int High=elements.lenght-1;
+		Element temp=elements[p];
 		for(int i=p+1;p<High;p++) {
-		Element tmp = elements[i];
 		elements[i] = elements[i+1];
-		elements[i+1] = tmp;}
-		elements[High]=element[p];
+		}
+		elements[High]=temp;
 		this.Move(p,elements);
 	}
     public void Sort() {
