@@ -4,23 +4,39 @@ import base.BaseSort;
 import base.Element;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Point;
+import java.awt.SystemColor;
 import java.util.Random;
+
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 public class RadixSort extends BaseSort{
 
-	Point[] stack;
+	Point[] boxPos;
 	Point[] arrayPos;
+	JLabel[] labelBox;
 	
-	void initStackPos()
+	void initBoxPos()
 	{
-		stack = new Point[10];
-		int x = 50;
-		int y = 300;
+		boxPos = new Point[10];
+		labelBox = new JLabel[10];
+		int x = (container.getSize().width - 950) / 2;
+		int y = 280;
 		for(int i = 0; i < 10; i++)
 		{
-			stack[i] = new Point(x, y);
+			boxPos[i] = new Point(x, y);
+			labelBox[i] = new JLabel("" + i);
+			labelBox[i].setSize(90, 160);
+			labelBox[i].setOpaque(true);
+			labelBox[i].setLocation(x - 20, y - 90);
+			labelBox[i].setFont(new Font("Helvetica", Font.BOLD, 17));
+			labelBox[i].setBackground(Color.GRAY);
+			labelBox[i].setHorizontalAlignment(SwingConstants.CENTER);
+		    labelBox[i].setVerticalAlignment(SwingConstants.BOTTOM);
+		    container.add(labelBox[i]);
 			x += 100;
 		}
 	}
@@ -37,8 +53,8 @@ public class RadixSort extends BaseSort{
 	
 	public RadixSort(JPanel container) {
 		super(container);
-		initStackPos();
 		this.InitRandomArray(15, 1000);
+		initBoxPos();
 		initArrayPos();
 	}
 	
@@ -81,12 +97,12 @@ public class RadixSort extends BaseSort{
 	    {
 	    	int index = (elements[i].getValue() / exp) % 10;
 	    	count[index]++;
-	    	MoveToStack(elements[i], index);
+	    	MoveToBox(elements[i], index);
 	    }
 	    
 	    for(i = 0; i < 10; i++)
 	    {
-	    	stack[i].y += count[i] * 60;
+	    	boxPos[i].y += count[i] * 60;
 	    }
 	    
 	    for (i = 1; i < 10; i++)
@@ -106,12 +122,12 @@ public class RadixSort extends BaseSort{
 	}
 	  
 
-	void MoveToStack(Element e, int indexStack)
+	void MoveToBox(Element e, int index)
 	{
 		Coloring(e, Color.green);
-		Move(e, stack[indexStack], 10);
+		Move(e, boxPos[index], 10);
   
-		stack[indexStack].y -= 60;
+		boxPos[index].y -= 60;
 		Coloring(e, Color.blue);
 	}
 	
@@ -210,5 +226,15 @@ public class RadixSort extends BaseSort{
 			
 		}
 		Coloring(e, Color.blue);
+	}
+	
+	@Override
+	public void RemoveAllElements()
+	{
+		super.RemoveAllElements();
+		for(int i = 0; i < 10; i++)
+		{
+			this.container.remove(labelBox[i]);
+		}
 	}
 }
