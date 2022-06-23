@@ -48,16 +48,20 @@ public class BaseSort {
 			pos.x += distance;
 		}
 	}
-	
 	public void Swap(int e1, int e2)
 	{
+		Coloring(elements[e1], Color.yellow);
+		Coloring(elements[e2], Color.red);
+		Point posElement2 = new Point(elements[e2].getPosition());
+		Point posElement1 = new Point(elements[e1].getPosition());
+		Move(elements[e1], posElement2, 10);
+		Move(elements[e2], posElement1, 10);
 		Element tmp = elements[e1];
 		elements[e1] = elements[e2];
 		elements[e2] = tmp;
-		Move(elements[e1], elements[e2].getPosition(), 10);
-		Move(elements[e2], elements[e1].getPosition(), 10);
-		Coloring(elements[e1], Color.yellow);
-		Coloring(elements[e2], Color.red);
+
+		Coloring(elements[e1], Color.blue);
+		Coloring(elements[e2], Color.blue);
 	}
 	
 	public void Swap(Element e1, Element e2)
@@ -82,7 +86,29 @@ public class BaseSort {
 	
 	public void Move(Element e, Point p, int delay)
 	{
-		
+		try 
+		{
+			Point[] waypoint = new Point[3];
+			int yTmp = (e.getPosition().y + p.y) / 2;
+			waypoint[0] = new Point(e.getPosition().x, yTmp);
+			waypoint[1] = new Point(p.x, yTmp);
+			waypoint[2] = new Point(p.x, p.y);
+			int index = 0;
+			while(index < waypoint.length)
+			{
+				e.setPosition(MoveTowards(e.getPosition(), waypoint[index], 10));
+				if(e.getPosition().equals(waypoint[index]))
+				{
+					index++;
+				}
+				Thread.sleep(delay);
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+
 	}
 	
 

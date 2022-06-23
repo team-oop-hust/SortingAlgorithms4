@@ -51,7 +51,7 @@ public class MainWindow extends JFrame{
 		pnImitiate = new JPanel();
 		pnImitiate.setBackground(SystemColor.menu);
 		pnImitiate.setBorder(new TitledBorder(null, "Khung ch\u1EA1y m\u00F4 ph\u1ECFng", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pnImitiate.setBounds(5, 44, 1355, 360);
+		pnImitiate.setBounds(5, 44, 1355, 500);
 		contentPane.add(pnImitiate);
 		pnImitiate.setLayout(null);
 		
@@ -79,7 +79,7 @@ public class MainWindow extends JFrame{
         lbPointM.setBackground(SystemColor.menu);
         lbPointM.setHorizontalAlignment(SwingConstants.CENTER);
         lbPointM.setVerticalAlignment(SwingConstants.CENTER);
-        Test();
+        TestHeapSort();
         pnImitiate.repaint();
 	}
 	
@@ -92,6 +92,22 @@ public class MainWindow extends JFrame{
         		try
         		{
         			rs.Sort();
+        		}
+        		catch(Exception e){
+        		}
+        	}
+        });
+        thread.start();
+	}
+	
+	void TestHeapSort() {
+		HeapSort hs = new HeapSort(pnImitiate);
+		Thread thread = new Thread(new Runnable() {
+        	public void run() 
+        	{
+        		try
+        		{
+        			hs.Sort();
         		}
         		catch(Exception e){
         		}
