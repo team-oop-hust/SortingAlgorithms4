@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.util.Random;
 import javax.swing.JPanel;
 import window.CompleteSortWindow;
+import window.MainWindow;
 
 public class BaseSort {
 
@@ -17,7 +18,7 @@ public class BaseSort {
 	final int distance = 80;
 	final int labelSize = 50;
 	final int delayFrame = 10; //miliseconds
-	private static BaseSort currentSort;
+	public static BaseSort currentSort;
 	
 	public BaseSort()
 	{
@@ -26,28 +27,12 @@ public class BaseSort {
 	
 	public BaseSort(JPanel container)
 	{
-		if(currentSort != null && container.equals(currentSort.container))
-		{
-			currentSort.RemoveAllElements();
-		}
 		this.container = container;
+		this.elements = MainWindow.frame.elements;
 		currentSort = this;
 	}
 	
-	public void InitRandomArray(int size, int maxValue)
-	{
-		Dimension d = this.container.getSize();
-		Point pos = new Point((d.width - distance * (size - 1) - labelSize) / 2, 100);
-		elements = new Element[size];
-		Random random = new Random();
-		for(int i = 0 ; i < elements.length; i++)
-		{
-			elements[i] = new Element(random.nextInt(maxValue));
-			elements[i].setPosition(new Point(pos.x, pos.y));
-			container.add(elements[i].getLabel());
-			pos.x += distance;
-		}
-	}
+	
 	
 	public void Swap(int e1, int e2)
 	{
