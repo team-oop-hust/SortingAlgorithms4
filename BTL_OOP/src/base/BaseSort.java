@@ -3,6 +3,7 @@ package base;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.SystemColor;
 import java.util.Random;
 import javax.swing.JPanel;
 import window.CompleteSortWindow;
@@ -20,6 +21,10 @@ public class BaseSort {
 	final int delayFrame = 10; //miliseconds
 	public static BaseSort currentSort;
 	
+	protected Color processingColor = new Color(255, 153, 153);
+	protected Color selectedGreen = new Color(153, 255, 153);
+	protected Color selectedYellow = new Color(255, 255, 153);
+	
 	public BaseSort()
 	{
 		
@@ -34,22 +39,31 @@ public class BaseSort {
 	
 	
 	
-	public void Swap(int e1, int e2)
-	{
-		Element tmp = elements[e1];
-		elements[e1] = elements[e2];
-		elements[e2] = tmp;
-		Move(elements[e1], elements[e2].getPosition(), 10);
-		Move(elements[e2], elements[e1].getPosition(), 10);
-		Coloring(elements[e1], Color.yellow);
-		Coloring(elements[e2], Color.red);
+	public void Swap(int e1, int e2) {
+		try
+		{
+			if(e1 == e2)
+			{
+				Coloring(elements[e1], this.processingColor);
+				Thread.sleep(200);
+				Coloring(elements[e1], SystemColor.blue);
+				return;
+			}
+			Coloring(elements[e1], this.selectedYellow);
+			Coloring(elements[e2], this.selectedYellow);
+			Element tmp = elements[e1];
+			elements[e1] = elements[e2];
+			elements[e2] = tmp;
+			this.Move(elements[e1], elements[e2], 30);
+			Coloring(elements[e1], SystemColor.blue);
+			Coloring(elements[e2], SystemColor.blue);
+		}
+		catch(Exception e)
+		{
+			
+		}
 	}
-	
-	public void Swap(Element e1, Element e2)
-	{
-		
-	}
-	
+
 	public void Coloring(Element e, Color color)
 	{
 		e.setColor(color);
@@ -68,6 +82,45 @@ public class BaseSort {
 	public void Move(Element e, Point p, int delay)
 	{
 		
+	}
+	
+	public void Move(Element e, Element f, int delay)
+	{
+		try 
+		{
+			Point[] waypoint1 = new Point[3];
+			int yTmp = e.getPosition().y + 50;
+			waypoint1[0] = new Point(e.getPosition().x, yTmp);
+			waypoint1[1] = new Point(f.getPosition().x, yTmp);
+			waypoint1[2] = new Point(f.getPosition().x, f.getPosition().y);
+			
+			Point[] waypoint2 = new Point[3];
+			int yTmp2 = f.getPosition().y - 50;
+			waypoint2[0] = new Point(f.getPosition().x, yTmp2);
+			waypoint2[1] = new Point(e.getPosition().x, yTmp2);
+			waypoint2[2] = new Point(e.getPosition().x, e.getPosition().y);
+			
+			int index1 = 0, index2 = 0;
+			while(index1 < waypoint1.length || index2 < waypoint2.length)
+			{
+				e.setPosition(MoveTowards(e.getPosition(), waypoint1[index1], 10));
+				f.setPosition(MoveTowards(f.getPosition(), waypoint2[index2], 10));
+				
+				if(e.getPosition().equals(waypoint1[index1]))
+				{
+					index1++;
+				}
+				if(f.getPosition().equals(waypoint2[index2]))
+				{
+					index2++;
+				}
+				Thread.sleep(delay);
+			}
+		} 
+		catch (Exception ex) 
+		{
+			ex.printStackTrace();
+		}
 	}
 	
 
@@ -112,7 +165,7 @@ public class BaseSort {
 	
 	public void Sort()
 	{
-		
+		System.out.println("BaseSort: Sort");
 	}
 
 	public JPanel getContainer()
