@@ -12,7 +12,7 @@ public class BubbleSort extends BaseSort{
 	
 	public BubbleSort(JPanel container) {
 		super(container);
-		this.InitRandomArray(15, 1000);
+//		this.InitRandomArray(15, 1000);
 	}
 	
 	public void Sort() {
@@ -48,42 +48,6 @@ public class BubbleSort extends BaseSort{
 		}
 	}
 	
-	public void Swapp(Element e, Element f, int delay)
-	{
-		try 
-		{
-			Point[] waypoint = new Point[4];
-			int yTmp = e.getPosition().y + 50;
-			waypoint[0] = new Point(e.getPosition().x, e.getPosition().y);
-			waypoint[1] = new Point(e.getPosition().x, yTmp);
-			waypoint[2] = new Point(f.getPosition().x, yTmp);
-			waypoint[3] = new Point(f.getPosition().x, f.getPosition().y);
-			int index = 1;
-			while(index < waypoint.length)
-			{
-				e.setPosition(MoveTowards(e.getPosition(), waypoint[index], 10));
-				f.setPosition(MoveTowards(f.getPosition(), waypoint[waypoint.length-1-index], 10));
-				if(f.getPosition().equals(waypoint[waypoint.length-1-index]))
-				{
-					index++;
-				}
-				Thread.sleep(delay);
-			}
-		}
-		catch(Exception ex)
-		{
-			ex.printStackTrace();
-		}
-	}
-	
-	public void Swap(int e1, int e2)
-	{
-		Element tmp = elements[e1];
-		Point p = tmp.getPosition();
-		elements[e1] = elements[e2];
-		elements[e2] = tmp;
-		this.Swapp(elements[e1],elements[e2], 30);
-	}
 	
 	public void Swap(Element e1, Element e2)
 	{
