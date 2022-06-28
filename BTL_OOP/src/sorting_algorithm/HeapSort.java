@@ -15,7 +15,7 @@ public class HeapSort extends BaseSort {
 	public HeapSort(JPanel container) {
 		super(container);
 //		initStackPos();
-		this.InitRandomArray(15, 1000);
+//		this.InitRandomArray(15, 1000);
 		heapElements = new Element[this.elements.length];
 		for (int i = 0; i< this.elements.length; i++) {
 			this.heapElements[i] = this.elements[i].clone();
@@ -61,22 +61,6 @@ public class HeapSort extends BaseSort {
 
 	}
 	
-	
-	public void Swap(int e1, int e2)
-	{
-		Coloring(elements[e1], Color.yellow);
-		Coloring(elements[e2], Color.red);
-		Point posElement2 = new Point(elements[e2].getPosition());
-		Point posElement1 = new Point(elements[e1].getPosition());
-		Move(elements[e1], posElement2, 10);
-		Move(elements[e2], posElement1, 10);
-		Element tmp = elements[e1];
-		elements[e1] = elements[e2];
-		elements[e2] = tmp;
-
-		Coloring(elements[e1], Color.blue);
-		Coloring(elements[e2], Color.blue);
-	}
 	
 	public void Move(Element e, Point p, int delay)
 	{
@@ -148,6 +132,7 @@ public class HeapSort extends BaseSort {
 		Point posElement1 = new Point(heapElements[i1].getPosition());
 		Move(heapElements[i1], posElement2, 10);
 		Move(heapElements[i2], posElement1, 10);
+		
 		Element tmp = heapElements[i1];
 		heapElements[i1] = heapElements[i2];
 		heapElements[i2] = tmp;
