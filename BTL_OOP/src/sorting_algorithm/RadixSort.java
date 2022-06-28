@@ -19,6 +19,14 @@ public class RadixSort extends BaseSort{
 	Point[] arrayPos;
 	JLabel[] labelBox;
 	
+	public RadixSort(JPanel container) {
+		super(container);
+//		this.InitRandomArray(15, 1000);
+		initBoxPos();
+		initArrayPos();
+		System.out.println("Init");
+	}
+	
 	void initBoxPos()
 	{
 		boxPos = new Point[10];
@@ -51,12 +59,7 @@ public class RadixSort extends BaseSort{
 	}
 	
 	
-	public RadixSort(JPanel container) {
-		super(container);
-		this.InitRandomArray(15, 1000);
-		initBoxPos();
-		initArrayPos();
-	}
+	
 	
 	public void Sort()
 	{
