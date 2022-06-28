@@ -5,6 +5,7 @@ import base.*;
 import java.awt.Dialog.ModalExclusionType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Random;
@@ -40,6 +41,7 @@ public class MainWindow extends JFrame{
 	private JLabel lbPoint2 = new JLabel();
 	private JLabel lbPointM = new JLabel();
 	
+	private File file = new File ("src//array.txt");
 	private JPanel pnTool;
 	private JPanel pnArray;
 	private JLabel lbNum, lbMaxNum;
@@ -50,11 +52,11 @@ public class MainWindow extends JFrame{
 	private JSlider slSize;
 	private JScrollPane pnScroll; 
 	private DefaultListModel<String> model;
-	private ActionListener eInterchangeSort, eSelectionSort, eBubbleSort, eInsertionSort, eShellSort, eHeapSort, eQuickSort, eMergeSort;
+	private ActionListener eBubbleSort, eHeapSort, eQuickSort, eRadixSort;
 	private ChangeListener eSize;
 	private JList<String> lsCode;
 	private JPanel pnAlgorithm;
-	private JRadioButton rdInterchangeSort, rdSelectionSort, rdBubbleSort, rdInsertionSort, rdShellSort, rdHeapSort, rdQuickSort, rdMergeSort;
+	private JRadioButton rdBubbleSort, rdHeapSort, rdQuickSort, rdRadixSort;
 	private ButtonGroup grSort;
 	private JPanel pnControl;
 	private JRadioButton rdIncrease, rdDecrease;
@@ -63,9 +65,11 @@ public class MainWindow extends JFrame{
 	private JButton btnSort, btnStop;
 	private JSlider slSpeed;
     private ChangeListener eSpeed;
-	
+	private Thread sortingThread;
     public Element[] elements;
 	
+
+    
 	
 	public MainWindow()
 	{
@@ -77,7 +81,7 @@ public class MainWindow extends JFrame{
 		setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
 		setTitle("M\u00F4 ph\u1ECFng thu\u1EADt to\u00E1n");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1376, 742);
+		setBounds(100, 100, 1376, 782);
 		
 		contentPane = new JPanel();
 		contentPane.setBackground(SystemColor.menu);
@@ -95,7 +99,7 @@ public class MainWindow extends JFrame{
 		pnImitiate = new JPanel();
 		pnImitiate.setBackground(SystemColor.menu);
 		pnImitiate.setBorder(new TitledBorder(null, "Khung ch\u1EA1y m\u00F4 ph\u1ECFng", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pnImitiate.setBounds(5, 44, 1355, 360);
+		pnImitiate.setBounds(5, 44, 1355, 430);
 		contentPane.add(pnImitiate);
 		pnImitiate.setLayout(null);
 		initPanelTool();  
@@ -105,7 +109,7 @@ public class MainWindow extends JFrame{
 	void initPanelTool()
 	{
 		pnTool = new JPanel();
-		pnTool.setBounds(5, 415, 1350, 287);
+		pnTool.setBounds(5, 455, 1350, 287);
 		pnTool.setBorder(new TitledBorder(null, "Tool", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		contentPane.add(pnTool);
 		
@@ -146,6 +150,7 @@ public class MainWindow extends JFrame{
 		pnControl.setLayout(null);
 		
 		initPanelArrayContent();
+		initPanelAlgorithm();
 		pnTool.setLayout(gl_pnTool);
 	}
 	
@@ -185,7 +190,7 @@ public class MainWindow extends JFrame{
 		btnRandom.setBackground(SystemColor.activeCaption);
 		btnRandom.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				createRandom();
+				createRandomArray();
 			}
 		});
 		btnRandom.setBounds(15, 27, 120, 25);
@@ -193,9 +198,8 @@ public class MainWindow extends JFrame{
 		btnByHand = new JButton("B\u1EB1ng tay");
 		btnByHand.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				FormInput formInput = new FormInput();
-//				formInput.setVisible(true);
-//				setState(3);
+				InputWindow inputWindow = new InputWindow();
+				inputWindow.setVisible(true);
 			}
 		});
 		btnByHand.setBackground(SystemColor.activeCaption);
@@ -204,16 +208,16 @@ public class MainWindow extends JFrame{
 		btnOpenFile = new JButton("M\u1EDF file");
 		btnOpenFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				try {
-//					Desktop desktop = null;
-//				    if (Desktop.isDesktopSupported()) {
-//				    	desktop = Desktop.getDesktop();
-//				    }
-//				    desktop.open(file);
-//				} catch (IOException ioe) {
-//					//file isn't existed
-//				    ioe.printStackTrace();				   
-//				}
+				try {
+					Desktop desktop = null;
+				    if (Desktop.isDesktopSupported()) {
+				    	desktop = Desktop.getDesktop();
+				    }
+				    desktop.open(file);
+				} catch (IOException ioe) {
+					//file isn't existed
+				    ioe.printStackTrace();				   
+				}
 			}
 		});
 		btnOpenFile.setBackground(SystemColor.activeCaption);
@@ -222,54 +226,30 @@ public class MainWindow extends JFrame{
 		btnReadFile = new JButton("\u0110\u1ECDc file");
 		btnReadFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-//				deleteArrays();
-//				try {
-//					Scanner in = new Scanner(file);
-//					num = Integer.parseInt(in.nextLine());
-//					array = new int[num];
-//					int pos = 0;
-//					while (in.hasNextLine()) {
-//						array[pos] = Integer.parseInt(in.nextLine());
-//						pos++;
-//					}
-//					in.close();
-//					lbArrays = new JLabel[num];
-//				
-//					for (int i = 0; i < num; i++) {
-//						//create label, set text "0"
-//					
-//						lbArrays[i] = new JLabel(String.valueOf(array[i]));
-//						pnImitiate.add(lbArrays[i]);
-//						
-//						//set size label
-//						lbArrays[i].setSize(50,50);
-//						lbArrays[i].setOpaque(true);
-//						lbArrays[i].setForeground(Color.BLUE);
-//						
-//						//set location label
-//						if (i == 0)
-//							lbArrays[i].setLocation(((int) ((18 - num) * 0.5) * 70) + 100, 150);
-//						else
-//							lbArrays[i].setLocation(lbArrays[i-1].getX() + 70, 150);
-//						
-//						//set fonts
-//						lbArrays[i].setFont(new Font("Tahoma", Font.PLAIN, 30));
-//						
-//						//set background color
-//						lbArrays[i].setBackground(SystemColor.inactiveCaption);
-//						
-//						//set text alignment center
-//						lbArrays[i].setHorizontalAlignment(SwingConstants.CENTER); 
-//						lbArrays[i].setVerticalAlignment(SwingConstants.CENTER);
-//					}
-//					pnImitiate.setVisible(true);
-//					pnImitiate.validate();
-//					pnImitiate.repaint();
-//					setState(2);
-//				} catch (FileNotFoundException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+				RemoveAllElements();
+				try {
+					Scanner in = new Scanner(file);
+					int num = Integer.parseInt(in.nextLine());
+					int[] array = new int[num];
+					int pos = 0;
+					while (in.hasNextLine()) {
+						array[pos] = Integer.parseInt(in.nextLine());
+						pos++;
+					}
+					in.close();
+					InitArray(array.length);
+					for(int i = 0; i < elements.length; i++)
+					{
+						elements[i].setValue(array[i]);
+					}
+					
+					pnImitiate.setVisible(true);
+					pnImitiate.validate();
+					pnImitiate.repaint();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		btnReadFile.setBackground(SystemColor.activeCaption);
@@ -296,7 +276,7 @@ public class MainWindow extends JFrame{
 		btnCreateArray.setBackground(SystemColor.activeCaption);
 		btnCreateArray.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				createArrays();
+				createArray();
 			}
 		});
 		btnCreateArray.setBounds(160, 59, 120, 25);
@@ -332,42 +312,158 @@ public class MainWindow extends JFrame{
 		pnCreateArray.add(lbMaxNum);
 	}
 	
-//	void Test()
-//	{
-//		QuickSort rs = new QuickSort(pnImitiate);
-//		Thread thread = new Thread(new Runnable() {
-//        	public void run() 
-//        	{
-//        		try
-//        		{
-//        			rs.Sort();
-//        		}
-//        		catch(Exception e){
-//        		}
-//        	}
-//        });
-//        thread.start();
-//	}
-	
-	void createArrays()
+	void initPanelAlgorithm()
 	{
-		InitRandomArray(10, 100);
+		//BubbleSort RadioButton
+		pnAlgorithm.setLayout(null);
+		rdBubbleSort = new JRadioButton("Bubble Sort");
+		rdBubbleSort.setBounds(24, 44, 149, 23);
+		rdBubbleSort.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		pnAlgorithm.add(rdBubbleSort);
+		eBubbleSort = new ActionListener() {
+		      public void actionPerformed(ActionEvent actionEvent) {
+		    	  if(BaseSort.currentSort == null)
+		    	  {
+		    		  createArrayFirst();
+		    		  return;
+		    	  }
+		    	  BaseSort.currentSort = new BubbleSort(pnImitiate);
+		    	  //lsCode.setSelectedIndex(0);
+		      }
+		};
+		this.rdBubbleSort.addActionListener(eBubbleSort);
+		
+		// HeapSort RadioButton
+		rdHeapSort = new JRadioButton("Heap Sort");
+		rdHeapSort.setBounds(24, 94, 149, 23);
+		rdHeapSort.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		pnAlgorithm.add(rdHeapSort);
+		eHeapSort = new ActionListener() {
+		      public void actionPerformed(ActionEvent actionEvent) {
+		    	  if(BaseSort.currentSort == null)
+		    	  {
+		    		  createArrayFirst();
+		    		  return;
+		    	  }
+		    	  BaseSort.currentSort = new HeapSort(pnImitiate);
+		    	  //lsCode.setSelectedIndex(0);
+		      }
+		};
+		this.rdHeapSort.addActionListener(eHeapSort);
+		
+		// QuickSort RadioButton
+		rdQuickSort = new JRadioButton("Quick Sort");
+		rdQuickSort.setBounds(24, 144, 149, 23);
+		rdQuickSort.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		pnAlgorithm.add(rdQuickSort);
+		eQuickSort = new ActionListener() {
+		      public void actionPerformed(ActionEvent actionEvent) {
+		    	  if(BaseSort.currentSort == null)
+		    	  {
+		    		  createArrayFirst();
+		    		  return;
+		    	  }
+		    	  BaseSort.currentSort = new QuickSort(pnImitiate);
+		    	  //lsCode.setSelectedIndex(0);
+		      }
+		};
+		this.rdQuickSort.addActionListener(eQuickSort);
+		
+		// RadixSort RadioButton
+		rdRadixSort = new JRadioButton("Radix Sort");
+		rdRadixSort.setBounds(24, 194, 149, 23);
+		rdRadixSort.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		pnAlgorithm.add(rdRadixSort);
+		eRadixSort = new ActionListener() {
+		      public void actionPerformed(ActionEvent actionEvent) {
+		    	  if(BaseSort.currentSort == null)
+		    	  {
+		    		  createArrayFirst();
+		    		  return;
+		    	  }
+		    	  BaseSort.currentSort = new RadixSort(pnImitiate);
+		    	  //lsCode.setSelectedIndex(0);
+		      }
+		};
+		this.rdRadixSort.addActionListener(eRadixSort);
+		
+		grSort = new ButtonGroup();
+		grSort.add(rdBubbleSort);
+		grSort.add(rdHeapSort);
+		grSort.add(rdQuickSort);
+		grSort.add(rdRadixSort);
+	}
+	
+	void createArray()
+	{
+		int num = (Integer)spNum.getValue();
+		InitArray(num);
 		if(BaseSort.currentSort == null)
 		{
 			BaseSort.currentSort = new BaseSort(this.pnImitiate);
 		}
 	}
 	
-	public void InitRandomArray(int size, int maxValue)
+	public void createArray(int[] array)
+	{
+		InitArray(array.length);
+		for(int i = 0; i < elements.length; i++)
+		{
+			elements[i].setValue(array[i]);
+		}
+		
+		if(BaseSort.currentSort == null)
+		{
+			BaseSort.currentSort = new BaseSort(this.pnImitiate);
+		}
+	}
+	
+	void createArrayFirst()
+	{
+		System.out.println("Create Array First");
+	}
+
+	void createRandomArray()
+	{
+		if(elements == null)
+		{
+			createArrayFirst();
+			return;
+		}
+		int maxValue = 1000;
+		Random random = new Random();
+		for(Element e : elements)
+		{
+			e.setValue(random.nextInt(maxValue));
+		}
+	}
+	
+//	public void InitRandomArray(int size, int maxValue)
+//	{
+//		Dimension d = this.pnImitiate.getSize();
+//		Point pos = new Point((d.width - distance * (size - 1) - labelSize) / 2, 100);
+//		RemoveAllElements();
+//		elements = new Element[size];
+//		Random random = new Random();
+//		for(int i = 0 ; i < elements.length; i++)
+//		{
+//			elements[i] = new Element(random.nextInt(maxValue));
+//			elements[i].setPosition(new Point(pos.x, pos.y));
+//			this.pnImitiate.add(elements[i].getLabel());
+//			pos.x += distance;
+//		}
+//		this.pnImitiate.repaint();
+//	}
+	
+	public void InitArray(int size)
 	{
 		Dimension d = this.pnImitiate.getSize();
 		Point pos = new Point((d.width - distance * (size - 1) - labelSize) / 2, 100);
 		RemoveAllElements();
 		elements = new Element[size];
-		Random random = new Random();
 		for(int i = 0 ; i < elements.length; i++)
 		{
-			elements[i] = new Element(random.nextInt(maxValue));
+			elements[i] = new Element(0);
 			elements[i].setPosition(new Point(pos.x, pos.y));
 			this.pnImitiate.add(elements[i].getLabel());
 			pos.x += distance;
@@ -377,19 +473,18 @@ public class MainWindow extends JFrame{
 	
 	public void setZero()
 	{
-		QuickSort rs = new QuickSort(pnImitiate);
-		Thread thread = new Thread(new Runnable() {
+		sortingThread = new Thread(new Runnable() {
         	public void run() 
         	{
         		try
         		{
-        			rs.Sort();
+        			BaseSort.currentSort.Sort();
         		}
         		catch(Exception e){
         		}
         	}
         });
-        thread.start();
+		sortingThread.start();
         
         this.pnImitiate.repaint();
 //		if(elements == null)
@@ -404,6 +499,8 @@ public class MainWindow extends JFrame{
 	{
 		if(BaseSort.currentSort != null)
 			BaseSort.currentSort.RemoveAllElements();
+		this.elements = null;
+		BaseSort.currentSort = null;
 		this.pnImitiate.repaint();
 	}
 	
