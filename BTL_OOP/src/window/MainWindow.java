@@ -37,9 +37,6 @@ public class MainWindow extends JFrame{
 	private JPanel pnSetValueArray;
 	
 	private JLabel lbTitle;
-	private JLabel lbPoint1 = new JLabel();
-	private JLabel lbPoint2 = new JLabel();
-	private JLabel lbPointM = new JLabel();
 	
 	private File file = new File ("src//array.txt");
 	private JPanel pnTool;
@@ -49,22 +46,11 @@ public class MainWindow extends JFrame{
 	private JButton btnCreateArray, btnDeleteArray, btnSetZero;
 	private JButton btnRandom, btnByHand, btnOpenFile, btnReadFile;
 	private JPanel pnCode;
-	private JSlider slSize;
-	private JScrollPane pnScroll; 
-	private DefaultListModel<String> model;
 	private ActionListener eBubbleSort, eHeapSort, eQuickSort, eRadixSort;
-	private ChangeListener eSize;
-	private JList<String> lsCode;
 	private JPanel pnAlgorithm;
 	private JRadioButton rdBubbleSort, rdHeapSort, rdQuickSort, rdRadixSort;
 	private ButtonGroup grSort;
 	private JPanel pnControl;
-	private JRadioButton rdIncrease, rdDecrease;
-	private ActionListener eIncrease, eDecrease;
-	private boolean isIncrease = true;
-	private JButton btnSort, btnStop;
-	private JSlider slSpeed;
-    private ChangeListener eSpeed;
 	private Thread sortingThread;
     public Element[] elements;
 	
@@ -119,7 +105,7 @@ public class MainWindow extends JFrame{
 		
 		pnCode = new JPanel();
 		pnCode.setBackground(SystemColor.menu);
-		pnCode.setBorder(new TitledBorder(null, "Code C/C++", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnCode.setBorder(new TitledBorder(null, "Code Java", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		
 		pnAlgorithm = new JPanel();
 		pnAlgorithm.setBackground(SystemColor.menu);
@@ -291,7 +277,7 @@ public class MainWindow extends JFrame{
 		});
 		btnDeleteArray.setBounds(160, 95, 120, 25);
 		
-		btnSetZero = new JButton("\u0110\u1EB7t v\u1EC1 0");
+		btnSetZero = new JButton("Sắp xếp");
 		btnSetZero.setBackground(SystemColor.activeCaption);
 		btnSetZero.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
