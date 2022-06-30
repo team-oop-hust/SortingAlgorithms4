@@ -128,10 +128,7 @@ public class HeapSort extends BaseSort {
 	private void SwapHeap(int i1, int i2) {
 		Coloring(heapElements[i1], Color.yellow);
 		Coloring(heapElements[i2], Color.red);
-		Point posElement2 = new Point(heapElements[i2].getPosition());
-		Point posElement1 = new Point(heapElements[i1].getPosition());
-		Move(heapElements[i1], posElement2, 10);
-		Move(heapElements[i2], posElement1, 10);
+		Move(heapElements[i1], heapElements[i2], 10);
 		
 		Element tmp = heapElements[i1];
 		heapElements[i1] = heapElements[i2];
@@ -139,7 +136,15 @@ public class HeapSort extends BaseSort {
 
 		Coloring(heapElements[i1], Color.blue);
 		Coloring(heapElements[i2], Color.blue);
-
+	}
+	
+	@Override
+	public void RemoveAllElements() {
+		super.RemoveAllElements();
+		for (int i=0; i < this.heapElements.length; i++) {
+			this.container.remove(this.heapElements[i].getLabel());
+		}
+		this.heapElements = null;
 	}
 	
 }
