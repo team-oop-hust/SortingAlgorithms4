@@ -37,17 +37,7 @@ public class BubbleSort extends BaseSort{
 		{
 			ex.printStackTrace();
 		}
-		ResetValue();
 	}
-	
-	void ResetValue()
-	{
-		for(Element e: elements)
-		{
-			e.setValue(e.getValue());
-		}
-	}
-	
 	
 	public void Swap(Element e1, Element e2)
 	{
