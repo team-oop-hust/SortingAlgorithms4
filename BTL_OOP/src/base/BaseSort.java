@@ -13,7 +13,6 @@ public class BaseSort {
 
 	protected Element[] elements;
 	protected JPanel container;
-	protected boolean isIncrease;
 	protected boolean isSorting;//kiemtra
 	final int speed = 10;
 	final int distance = 80;
@@ -35,9 +34,13 @@ public class BaseSort {
 		this.container = container;
 		this.elements = MainWindow.frame.elements;
 		currentSort = this;
+		Init();
 	}
 	
-	
+	public void Init()
+	{
+		
+	}
 	
 	public void Swap(int e1, int e2) {
 		try
@@ -72,11 +75,6 @@ public class BaseSort {
 	public void Highlight(int line)
 	{
 		
-	}
-	
-	public void Move(Element e, int x, int y, int delay)
-	{
-		Move(e, new Point(x, y), delay);
 	}
 	
 	public void Move(Element e, Point p, int delay)
@@ -165,7 +163,30 @@ public class BaseSort {
 	
 	public void Sort()
 	{
-		System.out.println("BaseSort: Sort");
+		if(MainWindow.frame.isIncrease)
+		{
+			SortIncrease();
+		}
+		else 
+		{
+			SortDecrease();
+		}
+		MainWindow.frame.End();
+	}
+	
+	public void SortIncrease()
+	{
+		
+	}
+	
+	public void SortDecrease()
+	{
+		
+	}
+	
+	public void UpdateSubElements()
+	{
+		
 	}
 
 	public JPanel getContainer()
@@ -184,6 +205,12 @@ public class BaseSort {
 		{
 			this.container.remove(elements[i].getLabel());
 		}
+		RemoveSubElements();
+	}
+	
+	public void RemoveSubElements()
+	{
+		
 	}
 	
 	public int[] getValue()
@@ -196,9 +223,19 @@ public class BaseSort {
 		return res;
 	}
 	
+	public void setElements(Element[] elements) 
+	{
+		this.elements = elements;
+	}
+	
 	public void ShowCompleteSortDialog()
 	{
 		CompleteSortWindow window = new CompleteSortWindow();
 		window.setVisible(true);
+	}
+	
+	public void HighlightRow(int line)
+	{
+		MainWindow.frame.HighlightRow(line);
 	}
 }
