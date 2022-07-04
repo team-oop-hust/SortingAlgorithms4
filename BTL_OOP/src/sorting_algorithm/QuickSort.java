@@ -12,8 +12,8 @@ public class QuickSort extends BaseSort {
 	public QuickSort(JPanel container) {
 		super(container);
 	}
-
-	public void Sort() {
+	
+	public void SortIncrease() {
 		int high = this.elements.length -1;
 		this.Progress(0, high);
 	}
