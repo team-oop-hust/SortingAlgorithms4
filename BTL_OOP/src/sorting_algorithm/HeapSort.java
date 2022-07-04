@@ -14,17 +14,18 @@ public class HeapSort extends BaseSort {
 
 	public HeapSort(JPanel container) {
 		super(container);
-//		initStackPos();
-//		this.InitRandomArray(15, 1000);
+		Init();
+	}
+	
+	public void Init()
+	{
+		this.RemoveSubElements();
 		heapElements = new Element[this.elements.length];
 		for (int i = 0; i< this.elements.length; i++) {
 			this.heapElements[i] = this.elements[i].clone();
 		}
 		this.InitHeap(heapElements);
-//		initArrayPos();
 	}
-	
-
 	
 	public void InitHeap(Element[] elements) {
 		Dimension d = this.container.getSize();
@@ -90,7 +91,7 @@ public class HeapSort extends BaseSort {
 	}
 	
 	@Override
-	public void Sort() {
+	public void SortIncrease() {
 		int n = this.elements.length;
 
 	      for (int i = n / 2 - 1; i >= 0; i--)
@@ -139,8 +140,20 @@ public class HeapSort extends BaseSort {
 	}
 	
 	@Override
-	public void RemoveAllElements() {
-		super.RemoveAllElements();
+	public void UpdateSubElements()
+	{
+		for(int i = 0; i < elements.length; i++)
+		{
+			heapElements[i].setValue(elements[i].getValue());
+		}
+	}
+	
+	@Override
+	public void RemoveSubElements() {
+		if(heapElements == null)
+		{
+			return;
+		}
 		for (int i=0; i < this.heapElements.length; i++) {
 			this.container.remove(this.heapElements[i].getLabel());
 		}
