@@ -17,7 +17,9 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
@@ -37,6 +39,9 @@ public class MainWindow extends JFrame{
 	private JPanel pnSetValueArray;
 	
 	private JLabel lbTitle;
+	private JLabel lbPoint1 = new JLabel();
+	private JLabel lbPoint2 = new JLabel();
+	private JLabel lbPointM = new JLabel();
 	
 	private File file = new File ("src//array.txt");
 	private JPanel pnTool;
@@ -46,16 +51,24 @@ public class MainWindow extends JFrame{
 	private JButton btnCreateArray, btnDeleteArray, btnSetZero;
 	private JButton btnRandom, btnByHand, btnOpenFile, btnReadFile;
 	private JPanel pnCode;
+	private JSlider slSize;
+	private JScrollPane pnScroll; 
+	private DefaultListModel<String> model;
 	private ActionListener eBubbleSort, eHeapSort, eQuickSort, eRadixSort;
+	private ChangeListener eSize;
+	private JList<String> lsCode;
 	private JPanel pnAlgorithm;
 	private JRadioButton rdBubbleSort, rdHeapSort, rdQuickSort, rdRadixSort;
 	private ButtonGroup grSort;
 	private JPanel pnControl;
+	private JRadioButton rdIncrease, rdDecrease;
+	private ActionListener eIncrease, eDecrease;
+	public boolean isIncrease = true;
+	private JButton btnSort, btnStop;
+	private JSlider slSpeed;
+    private ChangeListener eSpeed;
 	private Thread sortingThread;
     public Element[] elements;
-	
-
-    
 	
 	public MainWindow()
 	{
@@ -89,9 +102,137 @@ public class MainWindow extends JFrame{
 		contentPane.add(pnImitiate);
 		pnImitiate.setLayout(null);
 		initPanelTool();  
+		setState(0);
         pnImitiate.repaint();
 	}
-	
+	public void setState(int state) {
+		switch (state) {
+		case 0: //first state, haven't created arrays.
+			btnCreateArray.setEnabled(true);
+			btnDeleteArray.setEnabled(elements != null);
+			btnSetZero.setEnabled(false);
+
+			btnRandom.setEnabled(false);
+			btnByHand.setEnabled(true);
+			btnOpenFile.setEnabled(true);
+			btnReadFile.setEnabled(true);
+			
+			rdBubbleSort.setEnabled(false);
+			rdHeapSort.setEnabled(false);
+			rdQuickSort.setEnabled(false);
+			rdRadixSort.setEnabled(false);
+			
+			rdIncrease.setEnabled(false);
+			rdDecrease.setEnabled(false);
+			
+			btnSort.setEnabled(false);
+			btnStop.setEnabled(false);
+			break;
+			
+		case 1: //created arrays, be waiting to set value arrays.
+			btnDeleteArray.setEnabled(true);
+			btnSetZero.setEnabled(true);
+			
+			btnRandom.setEnabled(true);
+			btnByHand.setEnabled(true);
+			btnOpenFile.setEnabled(true);
+			btnReadFile.setEnabled(true);
+			
+			rdBubbleSort.setEnabled(true);
+			rdHeapSort.setEnabled(true);
+			rdQuickSort.setEnabled(true);
+			rdRadixSort.setEnabled(true);
+			
+			rdIncrease.setEnabled(true);
+			rdDecrease.setEnabled(true);	
+			
+			btnSort.setEnabled(false);
+			btnStop.setEnabled(false);
+			break;
+			
+		case 2: //be set values, ready to sort
+			btnDeleteArray.setEnabled(true);
+			btnSetZero.setEnabled(true);
+
+			btnRandom.setEnabled(true);
+			
+			rdBubbleSort.setEnabled(true);
+			rdHeapSort.setEnabled(true);
+			rdQuickSort.setEnabled(true);
+			rdRadixSort.setEnabled(true);
+			
+			rdIncrease.setEnabled(true);
+			rdDecrease.setEnabled(true);
+			
+			btnSort.setEnabled(true);
+			btnStop.setEnabled(false);
+			break;
+			
+		case 3: //sorting
+			btnCreateArray.setEnabled(false);
+			btnDeleteArray.setEnabled(false);
+			btnSetZero.setEnabled(false);
+			
+			btnRandom.setEnabled(false);
+			btnByHand.setEnabled(false);
+			btnOpenFile.setEnabled(false);
+			btnReadFile.setEnabled(false);
+			
+			rdIncrease.setEnabled(false);
+			rdDecrease.setEnabled(false);
+			
+			rdBubbleSort.setEnabled(false);
+			rdHeapSort.setEnabled(false);
+			rdQuickSort.setEnabled(false);
+			rdRadixSort.setEnabled(false);
+			
+			btnSort.setEnabled(false);
+			btnStop.setEnabled(true);
+			break;
+			
+		case 4: //sort done
+			btnCreateArray.setEnabled(true);
+			btnDeleteArray.setEnabled(true);
+			btnSetZero.setEnabled(true);
+			
+			btnRandom.setEnabled(true);
+			btnByHand.setEnabled(true);
+			btnOpenFile.setEnabled(true);
+			btnReadFile.setEnabled(true);
+			
+			rdBubbleSort.setEnabled(true);
+			rdHeapSort.setEnabled(true);
+			rdQuickSort.setEnabled(true);
+			rdRadixSort.setEnabled(true);
+			
+			rdIncrease.setEnabled(true);
+			rdDecrease.setEnabled(true);
+			
+			btnSort.setEnabled(true);
+			btnStop.setEnabled(true);
+			break;
+			default:
+				btnCreateArray.setEnabled(true);
+				btnDeleteArray.setEnabled(false);
+				btnSetZero.setEnabled(false);
+
+				btnRandom.setEnabled(false);
+				btnByHand.setEnabled(true);
+				btnOpenFile.setEnabled(true);
+				btnReadFile.setEnabled(true);
+				
+				rdBubbleSort.setEnabled(true);
+				rdHeapSort.setEnabled(true);
+				rdQuickSort.setEnabled(true);
+				rdRadixSort.setEnabled(true);
+				
+				rdIncrease.setEnabled(true);
+				rdDecrease.setEnabled(true);
+				
+				btnSort.setEnabled(false);
+				btnStop.setEnabled(false);
+		}
+	}
 	void initPanelTool()
 	{
 		pnTool = new JPanel();
@@ -105,7 +246,7 @@ public class MainWindow extends JFrame{
 		
 		pnCode = new JPanel();
 		pnCode.setBackground(SystemColor.menu);
-		pnCode.setBorder(new TitledBorder(null, "Code Java", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		pnCode.setBorder(new TitledBorder(null, "Code C/C++", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		
 		pnAlgorithm = new JPanel();
 		pnAlgorithm.setBackground(SystemColor.menu);
@@ -133,10 +274,11 @@ public class MainWindow extends JFrame{
 				.addComponent(pnAlgorithm, GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
 				.addComponent(pnControl, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
 		);
-		pnControl.setLayout(null);
 		
 		initPanelArrayContent();
 		initPanelAlgorithm();
+		initPanelCodeContent();
+		initPanelControlContent();
 		pnTool.setLayout(gl_pnTool);
 	}
 	
@@ -228,7 +370,9 @@ public class MainWindow extends JFrame{
 					{
 						elements[i].setValue(array[i]);
 					}
-					
+					InitSort();
+					BaseSort.currentSort.UpdateSubElements();
+					setState(2);
 					pnImitiate.setVisible(true);
 					pnImitiate.validate();
 					pnImitiate.repaint();
@@ -249,7 +393,7 @@ public class MainWindow extends JFrame{
 	
 	void initPanelCreateArrayContent()
 	{
-		lbNum = new JLabel("S\u1ED1 ph\u1EA7n t\u1EED m\u1EA3ng\r\n:");
+		lbNum = new JLabel("Số phần tử của mảng\r\n:");
 		lbNum.setBounds(16, 27, 139, 20);
 		
 		SpinnerModel sm = new SpinnerNumberModel(2, 2, 15, 1);
@@ -258,7 +402,7 @@ public class MainWindow extends JFrame{
 		JFormattedTextField txt = ((JSpinner.NumberEditor) spNum.getEditor()).getTextField();
 		((NumberFormatter) txt.getFormatter()).setAllowsInvalid(false);
 		
-		btnCreateArray = new JButton("T\u1EA1o m\u1EA3ng");
+		btnCreateArray = new JButton("Tạo Mảng");
 		btnCreateArray.setBackground(SystemColor.activeCaption);
 		btnCreateArray.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -267,7 +411,7 @@ public class MainWindow extends JFrame{
 		});
 		btnCreateArray.setBounds(160, 59, 120, 25);
 		
-		btnDeleteArray = new JButton("X\u00F3a m\u1EA3ng");
+		btnDeleteArray = new JButton("Xóa Mảng");
 		btnDeleteArray.setBackground(SystemColor.activeCaption);
 		btnDeleteArray.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -277,7 +421,7 @@ public class MainWindow extends JFrame{
 		});
 		btnDeleteArray.setBounds(160, 95, 120, 25);
 		
-		btnSetZero = new JButton("Sắp xếp");
+		btnSetZero = new JButton("Đặt về 0");
 		btnSetZero.setBackground(SystemColor.activeCaption);
 		btnSetZero.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -308,12 +452,9 @@ public class MainWindow extends JFrame{
 		pnAlgorithm.add(rdBubbleSort);
 		eBubbleSort = new ActionListener() {
 		      public void actionPerformed(ActionEvent actionEvent) {
-		    	  if(BaseSort.currentSort == null)
-		    	  {
-		    		  createArrayFirst();
-		    		  return;
-		    	  }
+		    	  BaseSort.currentSort.RemoveSubElements();
 		    	  BaseSort.currentSort = new BubbleSort(pnImitiate);
+		    	  pnImitiate.repaint();
 		    	  //lsCode.setSelectedIndex(0);
 		      }
 		};
@@ -326,12 +467,9 @@ public class MainWindow extends JFrame{
 		pnAlgorithm.add(rdHeapSort);
 		eHeapSort = new ActionListener() {
 		      public void actionPerformed(ActionEvent actionEvent) {
-		    	  if(BaseSort.currentSort == null)
-		    	  {
-		    		  createArrayFirst();
-		    		  return;
-		    	  }
+		    	  BaseSort.currentSort.RemoveSubElements();
 		    	  BaseSort.currentSort = new HeapSort(pnImitiate);
+		    	  pnImitiate.repaint();
 		    	  //lsCode.setSelectedIndex(0);
 		      }
 		};
@@ -344,12 +482,9 @@ public class MainWindow extends JFrame{
 		pnAlgorithm.add(rdQuickSort);
 		eQuickSort = new ActionListener() {
 		      public void actionPerformed(ActionEvent actionEvent) {
-		    	  if(BaseSort.currentSort == null)
-		    	  {
-		    		  createArrayFirst();
-		    		  return;
-		    	  }
+		    	  BaseSort.currentSort.RemoveSubElements();
 		    	  BaseSort.currentSort = new QuickSort(pnImitiate);
+		    	  pnImitiate.repaint();
 		    	  //lsCode.setSelectedIndex(0);
 		      }
 		};
@@ -362,12 +497,9 @@ public class MainWindow extends JFrame{
 		pnAlgorithm.add(rdRadixSort);
 		eRadixSort = new ActionListener() {
 		      public void actionPerformed(ActionEvent actionEvent) {
-		    	  if(BaseSort.currentSort == null)
-		    	  {
-		    		  createArrayFirst();
-		    		  return;
-		    	  }
+		    	  BaseSort.currentSort.RemoveSubElements();
 		    	  BaseSort.currentSort = new RadixSort(pnImitiate);
+		    	  pnImitiate.repaint();
 		    	  //lsCode.setSelectedIndex(0);
 		      }
 		};
@@ -378,17 +510,115 @@ public class MainWindow extends JFrame{
 		grSort.add(rdHeapSort);
 		grSort.add(rdQuickSort);
 		grSort.add(rdRadixSort);
+		this.rdBubbleSort.setSelected(true);
 	}
+	
+	void initPanelControlContent()
+	{
+		pnControl.setLayout(null);
+		
+		slSpeed = new JSlider();
+		slSpeed.setOrientation(SwingConstants.VERTICAL);
+		slSpeed.setBounds(267, 21, 32, 244);
+        slSpeed.setMinimum(1);
+        slSpeed.setMaximum(9);
+        slSpeed.setValue(5);
+		pnControl.add(slSpeed);
+		
+		rdIncrease = new JRadioButton("Sắp xếp tăng dần");
+		rdIncrease.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		rdIncrease.setBounds(30, 42, 200, 23);
+		eIncrease = new ActionListener() {
+		      public void actionPerformed(ActionEvent actionEvent) {
+		    	  //set Increase or Decrease
+		    	  isIncrease = true;
+		      }
+		};
+		rdIncrease.addActionListener(eIncrease);
+		pnControl.add(rdIncrease);
+		
+		rdDecrease = new JRadioButton("Sắp xếp giảm dần");
+		rdDecrease.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		rdDecrease.setBounds(30, 87, 200, 23);
+		eDecrease = new ActionListener() {
+		      public void actionPerformed(ActionEvent actionEvent) {
+		    	  //set Increase or Decrease
+		    	  isIncrease = false;
+		      }
+		};
+		rdDecrease.addActionListener(eDecrease);
+		pnControl.add(rdDecrease);
+		
+		ButtonGroup grDirect = new ButtonGroup();
+		grDirect.add(rdDecrease);
+		grDirect.add(rdIncrease);
+		rdIncrease.setSelected(true);
+		
+		btnSort = new JButton("Sắp xếp");
+		btnSort.setBackground(SystemColor.activeCaption);
+		btnSort.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {	
+				Start();
+			}
+		});
+		btnSort.setBounds(52, 140, 120, 25);
+		pnControl.add(btnSort);
+		
+		btnStop = new JButton("||");
+		btnStop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try
+				{
+					Stop();
+				}
+				catch(Exception ex)
+				{
+					
+				}
+			}
+		});
+		btnStop.setBackground(SystemColor.activeCaption);
+		btnStop.setBounds(52, 192, 120, 25);
+		pnControl.add(btnStop);
+	}
+	
+	void initPanelCodeContent()
+	{
+		slSize = new JSlider();
+        slSize.setMinimum(13);
+        slSize.setMaximum(20);
+        slSize.setValue(14);
+		slSize.setBounds(20, 21, 466, 26); //default 10, 21, 486, 26
+		pnCode.add(slSize);
+		
+		pnScroll = new JScrollPane();
+		pnScroll.setBounds(15, 53, 476, 223); // default 10, 53, 486, 223
+		pnCode.add(pnScroll);
+		model = new DefaultListModel<>();
+		lsCode = new JList<String>(model);
+		lsCode.setBorder(new LineBorder(new Color(0, 0, 0)));
+		lsCode.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		lsCode.setFont(new Font("Monospaced",Font.BOLD,14));
+		pnScroll.setViewportView(lsCode);
+		
+		eSize = new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				lsCode.setFont(new Font("Monospaced",Font.BOLD,slSize.getValue()));
+				lsCode.repaint();
+		    }
+		};
+		slSize.addChangeListener(eSize);
+	}
+	
 	
 	void createArray()
 	{
 		int num = (Integer)spNum.getValue();
 		InitArray(num);
-		if(BaseSort.currentSort == null)
-		{
-			BaseSort.currentSort = new BaseSort(this.pnImitiate);
-		}
+		InitSort();
+		setState(1);
 	}
+	
 	
 	public void createArray(int[] array)
 	{
@@ -397,8 +627,30 @@ public class MainWindow extends JFrame{
 		{
 			elements[i].setValue(array[i]);
 		}
-		
-		if(BaseSort.currentSort == null)
+		InitSort();
+		setState(2);
+	}
+
+	void InitSort()
+	{
+		int type = getTypeSort();
+		if(type == 0)
+		{
+			BaseSort.currentSort = new BubbleSort(this.pnImitiate);
+		}
+		else if(type == 1)
+		{
+			BaseSort.currentSort = new HeapSort(this.pnImitiate);
+		}
+		else if(type == 2)
+		{
+			BaseSort.currentSort = new QuickSort(this.pnImitiate);
+		}
+		else if(type == 3)
+		{
+			BaseSort.currentSort = new RadixSort(this.pnImitiate);
+		}
+		else 
 		{
 			BaseSort.currentSort = new BaseSort(this.pnImitiate);
 		}
@@ -422,25 +674,10 @@ public class MainWindow extends JFrame{
 		{
 			e.setValue(random.nextInt(maxValue));
 		}
+		BaseSort.currentSort.UpdateSubElements();
+		setState(2);
 	}
-	
-//	public void InitRandomArray(int size, int maxValue)
-//	{
-//		Dimension d = this.pnImitiate.getSize();
-//		Point pos = new Point((d.width - distance * (size - 1) - labelSize) / 2, 100);
-//		RemoveAllElements();
-//		elements = new Element[size];
-//		Random random = new Random();
-//		for(int i = 0 ; i < elements.length; i++)
-//		{
-//			elements[i] = new Element(random.nextInt(maxValue));
-//			elements[i].setPosition(new Point(pos.x, pos.y));
-//			this.pnImitiate.add(elements[i].getLabel());
-//			pos.x += distance;
-//		}
-//		this.pnImitiate.repaint();
-//	}
-	
+
 	public void InitArray(int size)
 	{
 		Dimension d = this.pnImitiate.getSize();
@@ -459,6 +696,27 @@ public class MainWindow extends JFrame{
 	
 	public void setZero()
 	{
+		if(elements == null)
+			return;
+		for(int i = 0 ; i < elements.length; i++)
+		{
+			elements[i].setValue(0);
+		}
+		setState(1);
+        this.pnImitiate.repaint();
+	}
+	
+	public void RemoveAllElements()
+	{
+		if(BaseSort.currentSort != null)
+			BaseSort.currentSort.RemoveAllElements();
+		this.elements = null;
+		this.pnImitiate.repaint();
+	}
+	
+	void Start()
+	{
+		setState(3);
 		sortingThread = new Thread(new Runnable() {
         	public void run() 
         	{
@@ -471,23 +729,53 @@ public class MainWindow extends JFrame{
         	}
         });
 		sortingThread.start();
-        
-        this.pnImitiate.repaint();
-//		if(elements == null)
-//			return;
-//		for(int i = 0 ; i < elements.length; i++)
-//		{
-//			elements[i].setValue(0);
-//		}
+		this.pnImitiate.repaint();
 	}
 	
-	public void RemoveAllElements()
+	void Stop() throws InterruptedException 
 	{
-		if(BaseSort.currentSort != null)
-			BaseSort.currentSort.RemoveAllElements();
-		this.elements = null;
-		BaseSort.currentSort = null;
-		this.pnImitiate.repaint();
+		this.sortingThread.stop();
+		this.RemoveAllElements();
+		this.sortingThread = null;
+		setState(0);
+	}	
+	
+	public void End()
+	{
+		CompleteSortWindow wnd = new CompleteSortWindow();
+		wnd.setVisible(true);
+		setState(0);
+	}
+
+	int getTypeSort()
+	{
+		if(this.rdBubbleSort.isSelected())
+		{
+			return 0;
+		}
+		if(this.rdHeapSort.isSelected())
+		{
+			return 1;
+		}
+		if(this.rdQuickSort.isSelected())
+		{
+			return 2;
+		}
+		if(this.rdRadixSort.isSelected())
+		{
+			return 3;
+		}
+		return -1;
+	}
+	
+	public void HighlightRow(int line)
+	{
+		if(line >= model.size())
+		{
+			return;
+		}
+		lsCode.setSelectedIndex(line);
+        lsCode.ensureIndexIsVisible(line);
 	}
 	
 	public static void main(String[] args) {
