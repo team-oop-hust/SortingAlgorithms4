@@ -21,14 +21,20 @@ public class RadixSort extends BaseSort{
 	
 	public RadixSort(JPanel container) {
 		super(container);
-//		this.InitRandomArray(15, 1000);
+		Init();
+	}
+	
+	@Override
+	public void Init()
+	{
 		initBoxPos();
 		initArrayPos();
-		System.out.println("Init");
 	}
+	
 	
 	void initBoxPos()
 	{
+		this.RemoveSubElements();
 		boxPos = new Point[10];
 		labelBox = new JLabel[10];
 		int x = (container.getSize().width - 950) / 2;
@@ -58,16 +64,28 @@ public class RadixSort extends BaseSort{
 		}
 	}
 	
-	
-	
-	
-	public void Sort()
+	@Override
+	public void SortIncrease()
 	{
+		container.repaint();
 		int m = getMax(elements);
 	    for (int exp = 1; m / exp > 0; exp *= 10)
 	    {
 	    	Highlight((int)Math.log10(exp));
-	    	countSort(exp);
+	    	countSort(exp, true);
+	    }
+	    ResetValue();
+	}
+	
+	@Override
+	public void SortDecrease()
+	{
+		container.repaint();
+		int m = getMax(elements);
+	    for (int exp = 1; m / exp > 0; exp *= 10)
+	    {
+	    	Highlight((int)Math.log10(exp));
+	    	countSort(exp, false);
 	    }
 	    ResetValue();
 	}
@@ -89,18 +107,30 @@ public class RadixSort extends BaseSort{
 	    return mx;
 	}
 	
-	void countSort(int exp)
+	void countSort(int exp, boolean isIncrease)
 	{
 		int length = elements.length;
 	    Element[] output = new Element[length];
 	    int i;
 	    int[] count = new int[10];
-	  
-	    for (i = 0; i < length; i++)
+	    
+	    if(isIncrease)
 	    {
-	    	int index = (elements[i].getValue() / exp) % 10;
-	    	count[index]++;
-	    	MoveToBox(elements[i], index);
+	    	for (i = 0; i < length; i++)
+		    {
+		    	int index = (elements[i].getValue() / exp) % 10;
+		    	count[index]++;
+		    	MoveToBox(elements[i], index);
+		    }
+	    }
+	    else 
+	    {
+	    	for (i = length - 1; i >= 0; i--)
+		    {
+		    	int index = (elements[i].getValue() / exp) % 10;
+		    	count[index]++;
+		    	MoveToBox(elements[i], index);
+		    }
 	    }
 	    
 	    for(i = 0; i < 10; i++)
@@ -117,11 +147,23 @@ public class RadixSort extends BaseSort{
 	        count[(elements[i].getValue() / exp) % 10]--;
 	    }
 	  
-	    for (i = 0; i < length; i++)
+	    if(isIncrease)
 	    {
-	    	elements[i] = output[i];
-	    	MoveToArray(elements[i], i);
+	    	for (i = 0; i < length; i++)
+		    {
+		    	elements[i] = output[i];
+		    	MoveToArray(elements[i], i);
+		    }
 	    }
+	    else 
+	    {
+	    	for (i = length - 1; i >= 0; i--)
+		    {
+		    	elements[i] = output[length - i - 1];
+		    	MoveToArray(elements[i], length - i - 1);
+		    }
+	    }
+	    	
 	}
 	  
 
@@ -232,12 +274,16 @@ public class RadixSort extends BaseSort{
 	}
 	
 	@Override
-	public void RemoveAllElements()
+	public void RemoveSubElements()
 	{
-		super.RemoveAllElements();
+		if(labelBox == null)
+		{
+			return;
+		}
 		for(int i = 0; i < 10; i++)
 		{
 			this.container.remove(labelBox[i]);
 		}
+		labelBox = null;
 	}
 }
