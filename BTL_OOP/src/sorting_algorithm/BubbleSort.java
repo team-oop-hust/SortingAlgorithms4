@@ -12,10 +12,9 @@ public class BubbleSort extends BaseSort{
 	
 	public BubbleSort(JPanel container) {
 		super(container);
-//		this.InitRandomArray(15, 1000);
 	}
 	
-	public void Sort() {
+	public void SortIncrease() {
 		try {
 		for (int i=0; i<elements.length-1; i++) {
 			boolean swapped = false;
@@ -37,7 +36,17 @@ public class BubbleSort extends BaseSort{
 		{
 			ex.printStackTrace();
 		}
+		ResetValue();
 	}
+	
+	void ResetValue()
+	{
+		for(Element e: elements)
+		{
+			e.setValue(e.getValue());
+		}
+	}
+	
 	
 	public void Swap(Element e1, Element e2)
 	{
