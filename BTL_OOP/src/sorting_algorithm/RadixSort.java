@@ -90,11 +90,6 @@ public class RadixSort extends BaseSort{
 	    ResetValue();
 	}
 	
-	public void Swap(Element e1, Element e2)
-	{
-		
-	}
-	
 	int getMax(Element[] arr)
 	{
 	    int mx = arr[0].getValue();
@@ -114,23 +109,11 @@ public class RadixSort extends BaseSort{
 	    int i;
 	    int[] count = new int[10];
 	    
-	    if(isIncrease)
+    	for (i = 0; i < length; i++)
 	    {
-	    	for (i = 0; i < length; i++)
-		    {
-		    	int index = (elements[i].getValue() / exp) % 10;
-		    	count[index]++;
-		    	MoveToBox(elements[i], index);
-		    }
-	    }
-	    else 
-	    {
-	    	for (i = length - 1; i >= 0; i--)
-		    {
-		    	int index = (elements[i].getValue() / exp) % 10;
-		    	count[index]++;
-		    	MoveToBox(elements[i], index);
-		    }
+	    	int index = (elements[i].getValue() / exp) % 10;
+	    	count[index]++;
+	    	MoveToBox(elements[i], index);
 	    }
 	    
 	    for(i = 0; i < 10; i++)
@@ -141,14 +124,14 @@ public class RadixSort extends BaseSort{
 	    for (i = 1; i < 10; i++)
 	        count[i] += count[i - 1];
 	  
-	    for (i = length - 1; i >= 0; i--) {
-	    	int index = count[(elements[i].getValue() / exp) % 10] - 1;
-	        output[index] = elements[i];
-	        count[(elements[i].getValue() / exp) % 10]--;
-	    }
-	  
 	    if(isIncrease)
 	    {
+	    	for (i = length - 1; i >= 0; i--) {
+		    	int index = count[(elements[i].getValue() / exp) % 10] - 1;
+		        output[index] = elements[i];
+		        count[(elements[i].getValue() / exp) % 10]--;
+		    }
+	    	
 	    	for (i = 0; i < length; i++)
 		    {
 		    	elements[i] = output[i];
@@ -157,10 +140,16 @@ public class RadixSort extends BaseSort{
 	    }
 	    else 
 	    {
-	    	for (i = length - 1; i >= 0; i--)
+	    	for (i = 0; i < length; i++) {
+		    	int index = count[(elements[i].getValue() / exp) % 10] - 1;
+		        output[index] = elements[i];
+		        count[(elements[i].getValue() / exp) % 10]--;
+		    }
+	    	
+	    	for (i = 0; i < length; i++)
 		    {
 		    	elements[i] = output[length - i - 1];
-		    	MoveToArray(elements[i], length - i - 1);
+		    	MoveToArray(elements[i], i);
 		    }
 	    }
 	    	
