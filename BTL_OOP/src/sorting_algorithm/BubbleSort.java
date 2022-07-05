@@ -36,17 +36,31 @@ public class BubbleSort extends BaseSort{
 		{
 			ex.printStackTrace();
 		}
-		ResetValue();
 	}
 	
-	void ResetValue()
-	{
-		for(Element e: elements)
+	public void SortDecrease() {
+		try {
+		for (int i=0; i<elements.length-1; i++) {
+			boolean swapped = false;
+			for (int j=0; j<elements.length-1; j++) {
+				Coloring(elements[j], Color.red);
+				Coloring(elements[j+1], Color.red);
+				if (elements[j].getValue()<elements[j+1].getValue()) {
+					this.Swap(j, j+1);
+					swapped = true;
+				}
+				else Thread.sleep(400);
+				Coloring(elements[j], Color.blue);
+				Coloring(elements[j+1], Color.blue);
+			}
+			if (swapped==false) break;
+		}
+		}
+		catch(Exception ex)
 		{
-			e.setValue(e.getValue());
+			ex.printStackTrace();
 		}
 	}
-	
 	
 	public void Swap(Element e1, Element e2)
 	{
