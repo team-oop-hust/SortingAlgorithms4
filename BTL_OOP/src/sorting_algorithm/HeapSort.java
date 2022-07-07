@@ -104,6 +104,21 @@ public class HeapSort extends BaseSort {
 	          downHeapify(this.elements, i, 0);
 	      }
 	}
+
+	@Override
+	public void SortDecrease() {
+		int n = this.elements.length;
+
+	      for (int i = n / 2 - 1; i >= 0; i--)
+	          upHeapify(this.elements, n, i);
+
+	      for (int i=n-1; i>0; i--)
+	      {
+	    	  this.Swap(0,i);
+	    	  this.SwapHeap(0,i);
+	          upHeapify(this.elements, i, 0);
+	      }
+	}
 	
 	private void downHeapify(Element[] elements, int n, int i)
     {
@@ -123,6 +138,27 @@ public class HeapSort extends BaseSort {
 	    	  this.SwapHeap(i, largest);
 
 	          downHeapify(elements, n, largest);
+	      }
+    }
+		
+		private void upHeapify(Element[] elements, int n, int i)
+    {
+		int largest = i;
+	      int l = 2*i + 1;
+	      int r = 2*i + 2;
+
+	      if (l < n && elements[l].getValue() < elements[largest].getValue())
+	          largest = l;
+
+	      if (r < n && elements[r].getValue() < elements[largest].getValue())
+	          largest = r;
+
+	      if (largest != i)
+	      {
+	    	  this.Swap(i, largest);
+	    	  this.SwapHeap(i, largest);
+
+	          upHeapify(elements, n, largest);
 	      }
     }
 	
