@@ -2,10 +2,8 @@ package sorting_algorithm;
 
 import java.awt.Dimension;
 import java.awt.Point;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JPanel;
-
 import base.BaseSort;
 import base.Element;
 import window.MainWindow;
@@ -30,16 +28,28 @@ public class HeapSort extends BaseSort {
 	@Override
 	public void InitCode() {
 		model = new DefaultListModel<String>();
-		model.addElement("void HeapSort(int arr[]) {");
-		model.addElement("     int n = arr.length;");
-		model.addElement("     for (int i = n / 2 - 1; i >= 0; i--)");
-		model.addElement("          heapify(arr, n, i);");
-		model.addElement("     for (int i = n - 1; i > 0; i--) {");
-		model.addElement("          int temp = arr[0];");
-		model.addElement("          arr[0] = arr[i];");
-		model.addElement("          arr[i] = temp;");
-		model.addElement("          heapify(arr, i, 0);");
-		model.addElement("	   }");
+		model.addElement("void HeapSort(int arr[]) {"); // 0
+		model.addElement("     int n = arr.length;"); // 1
+		model.addElement("     for (int i = n / 2 - 1; i >= 0; i--)"); // 2
+		model.addElement("          heapify(arr, n, i);"); // 3
+		model.addElement("     for (int i = n - 1; i > 0; i--) {"); // 4
+		model.addElement("          Swap(arr[i], arr[0]);"); // 5
+		model.addElement("          heapify(arr, i, 0);"); // 6
+		model.addElement("	    }"); // 7
+		model.addElement("}"); // 8
+		model.addElement(""); // 9
+		model.addElement("void heapify(int arr[], int n, int i) {"); // 10
+		model.addElement("     int largest = i;"); // 11
+		model.addElement("     int l = 2 * i + 1;"); // 12
+		model.addElement("     int r = 2 * i + 2;"); // 13
+		model.addElement("     if(l < n && arr[l] > arr[largest])"); // 14
+		model.addElement("          largest = l;"); // 15
+		model.addElement("     if(l < n && arr[r] > arr[largest])"); // 16
+		model.addElement("          largest = r;"); // 17
+		model.addElement("     if(largest != i) {"); // 18
+		model.addElement("          Swap(arr[largest], arr[i]);"); // 19
+		model.addElement("          heapify(arr, n, largest);"); // 20
+		model.addElement("	   	}"); // 21
 		model.addElement("}");
 		MainWindow.frame.setCode(model);
 	}
@@ -47,12 +57,10 @@ public class HeapSort extends BaseSort {
 	public void InitHeap(Element[] elements) {
 		Dimension d = this.container.getSize();
 		Point parentPoint = new Point(d.width / 2, d.height / 2);
-
 		int i = 0;
 		int row = 1;
 		elements[i].setPosition(parentPoint);
 		container.add(elements[i].getLabel());
-
 		this.DrawHeap(2 * i + 1, parentPoint, elements, row);
 		this.DrawHeap(2 * i + 2, parentPoint, elements, row);
 	}
@@ -79,109 +87,77 @@ public class HeapSort extends BaseSort {
 
 	}
 
-	public void Move(Element e, Point p, int delay) {
+	void Progress(boolean isIncrease) {
 		try {
-			Point[] waypoint = new Point[3];
-			int yTmp = (e.getPosition().y + p.y) / 2;
-			waypoint[0] = new Point(e.getPosition().x, yTmp);
-			waypoint[1] = new Point(p.x, yTmp);
-			waypoint[2] = new Point(p.x, p.y);
-			int index = 0;
-			while (index < waypoint.length) {
-				e.setPosition(MoveTowards(e.getPosition(), waypoint[index], 10));
-				if (e.getPosition().equals(waypoint[index])) {
-					index++;
-				}
-				Thread.sleep(delay);
+			HighlightRow(1);
+			int n = this.elements.length;
+			for (int i = n / 2 - 1; i >= 0; i--) {
+				HighlightRow(2);
+				HighlightRow(3);
+				Heapify(elements, n, i, isIncrease);
 			}
+			for (int i = n - 1; i > 0; i--) {
+				HighlightRow(4);
+				Coloring(elements[0], compareColor);
+				Coloring(elements[i], compareColor);
+				Thread.sleep(delayFrame * 20);
+				HighlightRow(5);
+				this.Swap(0, i);
+				this.SwapHeap(0, i);
+				HighlightRow(6);
+				Heapify(elements, i, 0, isIncrease);
+				HighlightRow(7);
+			}
+			HighlightRow(8);
 		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
 
+		}
 	}
 
 	@Override
 	public void SortIncrease() {
-		try {
-			int n = this.elements.length;
-
-			for (int i = n / 2 - 1; i >= 0; i--)
-				downHeapify(this.elements, n, i);
-
-			for (int i = n - 1; i > 0; i--) {
-				Coloring(elements[0], compareColor);
-				Coloring(elements[i], compareColor);
-				Thread.sleep(delayFrame * 20);
-				this.Swap(0, i);
-				this.SwapHeap(0, i);
-				downHeapify(this.elements, i, 0);
-			}
-		} catch (Exception ex) {
-
-		}
+		Progress(true);
 	}
 
 	@Override
 	public void SortDecrease() {
-		try {
-			int n = this.elements.length;
-
-			for (int i = n / 2 - 1; i >= 0; i--)
-				upHeapify(this.elements, n, i);
-
-			for (int i = n - 1; i > 0; i--) {
-				Coloring(elements[0], compareColor);
-				Coloring(elements[i], compareColor);
-				Thread.sleep(delayFrame * 20);
-				this.Swap(0, i);
-				this.SwapHeap(0, i);
-				upHeapify(this.elements, i, 0);
-			}
-		} catch (Exception ex) {
-
-		}
+		Progress(false);
 	}
 
-	private void downHeapify(Element[] elements, int n, int i) throws InterruptedException {
+	private void Heapify(Element[] elements, int n, int i, boolean isIncrease) throws InterruptedException {
+		HighlightRow(10);
+		HighlightRow(11);
 		int largest = i;
+		HighlightRow(12);
 		int l = 2 * i + 1;
+		HighlightRow(13);
 		int r = 2 * i + 2;
+		HighlightRow(14);
+		if (l < n) {
+			int num = elements[l].getValue() - elements[largest].getValue();
+			if ((isIncrease && num > 0) || (!isIncrease && num < 0))
+				largest = l;
+		}
 
-		if (l < n && elements[l].getValue() > elements[largest].getValue())
-			largest = l;
+		HighlightRow(16);
+		if (r < n) {
+			int num = elements[r].getValue() - elements[largest].getValue();
+			if ((isIncrease && num > 0) || (!isIncrease && num < 0))
+				largest = r;
+		}
 
-		if (r < n && elements[r].getValue() > elements[largest].getValue())
-			largest = r;
-
+		HighlightRow(18);
 		if (largest != i) {
 			Coloring(elements[largest], compareColor);
 			Coloring(elements[i], compareColor);
+			HighlightRow(19);
 			Thread.sleep(delayFrame * 20);
 			this.Swap(i, largest);
 			this.SwapHeap(i, largest);
-			downHeapify(elements, n, largest);
+			HighlightRow(20);
+			Heapify(elements, n, largest, isIncrease);
 		}
-	}
-
-	private void upHeapify(Element[] elements, int n, int i) throws InterruptedException {
-		int largest = i;
-		int l = 2 * i + 1;
-		int r = 2 * i + 2;
-
-		if (l < n && elements[l].getValue() < elements[largest].getValue())
-			largest = l;
-
-		if (r < n && elements[r].getValue() < elements[largest].getValue())
-			largest = r;
-
-		if (largest != i) {
-			Coloring(elements[largest], compareColor);
-			Coloring(elements[i], compareColor);
-			Thread.sleep(delayFrame * 20);
-			this.Swap(i, largest);
-			this.SwapHeap(i, largest);
-			upHeapify(elements, n, largest);
-		}
+		HighlightRow(21);
 	}
 
 	private void SwapHeap(int i1, int i2) {

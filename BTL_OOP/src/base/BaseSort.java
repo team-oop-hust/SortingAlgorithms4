@@ -58,16 +58,14 @@ public class BaseSort {
 				Coloring(elements[e1], normalColor);
 				return;
 			}
-			if(e1 > e2)
-			{
+			if (e1 > e2) {
 				Coloring(elements[e1], swapBackwardColor);
 				Coloring(elements[e2], swapForwardColor);
-			}
-			else {
+			} else {
 				Coloring(elements[e2], swapBackwardColor);
 				Coloring(elements[e1], swapForwardColor);
 			}
-			
+
 			Element tmp = elements[e1];
 			elements[e1] = elements[e2];
 			elements[e2] = tmp;
@@ -158,12 +156,11 @@ public class BaseSort {
 			SortDecrease();
 		}
 
-		for(int i = 0; i < elements.length; i++)
-		{
+		for (int i = 0; i < elements.length; i++) {
 			Coloring(elements[i], completedColor);
 			Thread.sleep(delayFrame * 10);
 		}
-
+		HighlightRow(0);
 		MainWindow.frame.End();
 	}
 
@@ -188,9 +185,7 @@ public class BaseSort {
 	}
 
 	public void RemoveAllElements() {
-		for (int i = 0; i < elements.length; i++) {
-			container.remove(elements[i].getLabel());
-		}
+		container.removeAll();
 		RemoveSubElements();
 	}
 
@@ -216,6 +211,14 @@ public class BaseSort {
 	}
 
 	public void HighlightRow(int line) {
-		MainWindow.frame.HighlightRow(line);
+		try {
+			if (line >= model.size()) {
+				return;
+			}
+			MainWindow.frame.HighlightRow(line);
+			Thread.sleep(delayFrame * 2);
+		} catch (Exception ex) {
+
+		}
 	}
 }

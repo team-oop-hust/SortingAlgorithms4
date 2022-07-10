@@ -49,7 +49,6 @@ public class MainWindow extends JFrame {
 	private JPanel pnCode;
 	private JSlider slSize;
 	private JScrollPane pnScroll;
-	private DefaultListModel<String> model;
 	private ActionListener eBubbleSort, eHeapSort, eQuickSort, eRadixSort;
 	private ChangeListener eSize;
 	private JList<String> lsCode;
@@ -616,8 +615,7 @@ public class MainWindow extends JFrame {
 		pnScroll = new JScrollPane();
 		pnScroll.setBounds(15, 53, 476, 223); // default 10, 53, 486, 223
 		pnCode.add(pnScroll);
-		model = new DefaultListModel<>();
-		lsCode = new JList<String>(model);
+		lsCode = new JList<String>();
 		lsCode.setBorder(new LineBorder(new Color(0, 0, 0)));
 		lsCode.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		lsCode.setFont(new Font("Monospaced", Font.BOLD, 14));
@@ -730,8 +728,10 @@ public class MainWindow extends JFrame {
 
 	void Stop() throws InterruptedException {
 		this.sortingThread.stop();
-		this.RemoveAllElements();
 		this.sortingThread = null;
+		this.RemoveAllElements();
+		HighlightRow(0);
+		pnImitiate.repaint();
 		setState(0);
 	}
 
@@ -758,11 +758,9 @@ public class MainWindow extends JFrame {
 	}
 
 	public void HighlightRow(int line) {
-		if (line >= model.size()) {
-			return;
-		}
 		lsCode.setSelectedIndex(line);
 		lsCode.ensureIndexIsVisible(line);
+		contentPane.repaint();
 	}
 
 	public void setCode(DefaultListModel<String> model) {

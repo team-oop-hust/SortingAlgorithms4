@@ -9,6 +9,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 public class RadixSort extends BaseSort {
 
@@ -29,28 +30,36 @@ public class RadixSort extends BaseSort {
 
 	@Override
 	public void InitCode() {
+		boolean isIncrease = MainWindow.frame.isIncrease;
 		model = new DefaultListModel<String>();
-		model.addElement("void RadixSort(int arr[]) {");
-		model.addElement("     int n = arr.length;");
-		model.addElement("     int m = getMax(arr, n)");
-		model.addElement("     for (int exp = 1; m / exp > 0; exp *= 10)");
-		model.addElement("          countSort(arr, exp);");
-		model.addElement("}");
-		model.addElement("");
-		model.addElement("void countSort(int arr[], int exp) {");
-		model.addElement("     int n = arr.length;");
-		model.addElement("     int output[] = new int[n];");
-		model.addElement("     int count[] = new int[10];");
-		model.addElement("     for (int i = 0; i < n; i++) ");
-		model.addElement("          count[(arr[i] / exp) % 10]++;");
-		model.addElement("     for (int i = 0; i < n; i++) ");
-		model.addElement("          count[i] += count[i - 1];");
-		model.addElement("     for (i = n - 1; i >= 0; i--) {");
-		model.addElement("          output[count[(arr[i] / exp) % 10] - 1] = arr[i];");
-		model.addElement("          count[(arr[i] / exp) % 10]--;");
-		model.addElement("     }");
-		model.addElement("     for (int i = 0; i < n; i++) ");
-		model.addElement("          arr[i] = output[i];");
+		model.addElement("void RadixSort(int arr[]) {");// 0
+		model.addElement("     int n = arr.length;");// 1
+		model.addElement("     int m = getMax(arr, n)");// 2
+		model.addElement("     for (int exp = 1; m / exp > 0; exp *= 10)");// 3
+		model.addElement("          countSort(arr, exp);");// 4
+		model.addElement("}");// 5
+		model.addElement("");// 6
+		model.addElement("void countSort(int arr[], int exp) {");// 7
+		model.addElement("     int n = arr.length;");// 8
+		model.addElement("     int output[] = new int[n];");// 9
+		model.addElement("     int count[] = new int[10];");// 10
+		model.addElement("     for (int i = 0; i < n; i++) ");// 11
+		model.addElement("          count[(arr[i] / exp) % 10]++;");// 12
+		model.addElement("     for (int i = 0; i < n; i++) ");// 13
+		model.addElement("          count[i] += count[i - 1];");// 14
+		if (isIncrease)
+			model.addElement("     for (i = n - 1; i >= 0; i--) {");// 15
+		else
+			model.addElement("     for (i = 0; i < n; i++) {");// 15
+		model.addElement("          output[count[(arr[i] / exp) % 10] - 1] = arr[i];");// 16
+		model.addElement("          count[(arr[i] / exp) % 10]--;");// 17
+		model.addElement("     }");// 18
+		model.addElement("     for (int i = 0; i < n; i++) ");// 19
+		if(isIncrease)
+		model.addElement("          arr[i] = output[i];");// 20
+		else
+		model.addElement("          arr[i] = output[n - i - 1];");// 20
+		model.addElement("}");// 21
 		MainWindow.frame.setCode(model);
 	}
 
@@ -85,22 +94,32 @@ public class RadixSort extends BaseSort {
 	@Override
 	public void SortIncrease() {
 		container.repaint();
+		HighlightRow(1);
+		HighlightRow(2);
 		int m = getMax(elements);
 		for (int exp = 1; m / exp > 0; exp *= 10) {
+			HighlightRow(3);
+			HighlightRow(4);
 			Highlight((int) Math.log10(exp));
 			countSort(exp, true);
 		}
+		HighlightRow(5);
 		ResetValue();
 	}
 
 	@Override
 	public void SortDecrease() {
 		container.repaint();
+		HighlightRow(1);
+		HighlightRow(2);
 		int m = getMax(elements);
 		for (int exp = 1; m / exp > 0; exp *= 10) {
+			HighlightRow(3);
+			HighlightRow(4);
 			Highlight((int) Math.log10(exp));
 			countSort(exp, false);
 		}
+		HighlightRow(5);
 		ResetValue();
 	}
 
@@ -115,12 +134,18 @@ public class RadixSort extends BaseSort {
 	}
 
 	void countSort(int exp, boolean isIncrease) {
+		HighlightRow(7);
+		HighlightRow(8);
 		int length = elements.length;
+		HighlightRow(9);
 		Element[] output = new Element[length];
 		int i;
+		HighlightRow(10);
 		int[] count = new int[10];
 
 		for (i = 0; i < length; i++) {
+			HighlightRow(11);
+			HighlightRow(12);
 			int index = (elements[i].getValue() / exp) % 10;
 			count[index]++;
 			MoveToBucket(elements[i], index);
@@ -130,28 +155,39 @@ public class RadixSort extends BaseSort {
 			bucketPos[i].y += count[i] * 60;
 		}
 
-		for (i = 1; i < 10; i++)
+		for (i = 1; i < 10; i++) {
+			HighlightRow(13);
+			HighlightRow(14);
 			count[i] += count[i - 1];
+		}
 
 		if (isIncrease) {
 			for (i = length - 1; i >= 0; i--) {
+				HighlightRow(15);
+				HighlightRow(16);
+				HighlightRow(17);
 				int index = count[(elements[i].getValue() / exp) % 10] - 1;
 				output[index] = elements[i];
 				count[(elements[i].getValue() / exp) % 10]--;
 			}
-
 			for (i = 0; i < length; i++) {
+				HighlightRow(19);
+				HighlightRow(20);
 				elements[i] = output[i];
 				MoveToArray(elements[i], i);
 			}
 		} else {
 			for (i = 0; i < length; i++) {
+				HighlightRow(15);
+				HighlightRow(16);
+				HighlightRow(17);
 				int index = count[(elements[i].getValue() / exp) % 10] - 1;
 				output[index] = elements[i];
 				count[(elements[i].getValue() / exp) % 10]--;
 			}
-
 			for (i = 0; i < length; i++) {
+				HighlightRow(19);
+				HighlightRow(20);
 				elements[i] = output[length - i - 1];
 				MoveToArray(elements[i], i);
 			}
@@ -231,7 +267,7 @@ public class RadixSort extends BaseSort {
 				}
 			}
 
-			e.setLabelText("<html>" + tmp2 + "<font color='red'>" + hl + "</font>" + tmp + "</html>");
+			e.setLabelText("<html>" + tmp2 + "<font color='yellow'>" + hl + "</font>" + tmp + "</html>");
 		}
 	}
 
