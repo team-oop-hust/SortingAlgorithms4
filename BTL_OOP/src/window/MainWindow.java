@@ -608,7 +608,7 @@ public class MainWindow extends JFrame {
 		slSize = new JSlider();
 		slSize.setMinimum(13);
 		slSize.setMaximum(20);
-		slSize.setValue(14);
+		slSize.setValue(0);
 		slSize.setBounds(20, 21, 466, 26); // default 10, 21, 486, 26
 		pnCode.add(slSize);
 
@@ -701,7 +701,8 @@ public class MainWindow extends JFrame {
 		for (int i = 0; i < elements.length; i++) {
 			elements[i].setValue(0);
 		}
-		setState(1);
+		BaseSort.currentSort.UpdateSubElements();
+		setState(2);
 		this.pnImitiate.repaint();
 	}
 

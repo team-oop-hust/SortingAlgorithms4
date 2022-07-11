@@ -50,6 +50,17 @@ public class BaseSort {
 
 	}
 
+	public boolean firstCheck() {
+		boolean isIncrease = MainWindow.frame.isIncrease;
+		for (int i = 0; i < elements.length - 1; i++) {
+			if ((isIncrease && elements[i].getValue() > elements[i + 1].getValue())
+					|| (!isIncrease && elements[i].getValue() < elements[i + 1].getValue())) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public void Swap(int e1, int e2) {
 		try {
 			if (e1 == e2) {
@@ -150,12 +161,14 @@ public class BaseSort {
 	}
 
 	public void Sort() throws InterruptedException {
-		if (MainWindow.frame.isIncrease) {
-			SortIncrease();
-		} else {
-			SortDecrease();
-		}
 
+		if (!firstCheck()) {
+			if (MainWindow.frame.isIncrease) {
+				SortIncrease();
+			} else {
+				SortDecrease();
+			}
+		}
 		for (int i = 0; i < elements.length; i++) {
 			Coloring(elements[i], completedColor);
 			Thread.sleep(delayFrame * 10);
